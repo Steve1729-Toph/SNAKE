@@ -1,2 +1,234 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+#include <iostream>
+
+using namespace std;
+
+struct TNODE{
+    int key;
+    TNODE* pleft;
+    TNODE* pright;
+};
+
+typedef TNODE node;
+typedef node* TREE;
+
+/////////////////////////////
+void Init(TREE& t);
+void add_TNODE(TREE& t, int x);
+void Browser_NLR(TREE t);
+void Browser_NRL(TREE t);
+void Browser_LNR(TREE t);
+void Browser_RNL(TREE t);
+void Browser_LRN(TREE t);
+void Browser_RLN(TREE t);
+void Menu(TREE t);
+node* FIND(TREE t, int pos_x);
+int Find_MAX(TREE t);
+int Find_MIN(TREE t);
+void Delete(TREE& t, int info);
+////////////////////////////
+
+int main(){
+
+    TREE t;
+
+    Init(t);
+
+    Menu(t);
+
+    return 0;
+}
+
+
+void Init(TREE& t){
+    t = nullptr;
+}
+
+void add_TNODE(TREE& t, int x){
+    if(t == nullptr){
+        node* p = new node;
+        p->key = x;
+        p->pleft = nullptr;
+        p->pright = nullptr;
+        t = p;
+    }else{
+        if(t->key > x){
+            add_TNODE(t->pleft, x);
+        }else if(t->key < x){
+            add_TNODE(t->pright, x);
+        }
+    }
+}
+
+void Browser_NLR(TREE t){
+    if(t){
+        cout << t->key << " ";
+        Browser_NLR(t->pleft);
+        Browser_NLR(t->pright);
+    }
+}
+void Browser_NRL(TREE t){
+    if(t){
+        cout << t->key << " ";
+        Browser_NLR(t->pright);
+        Browser_NLR(t->pleft);
+    }
+}
+void Browser_LNR(TREE t){
+    if(t){
+        Browser_NLR(t->pleft);
+        cout << t->key << " ";
+        Browser_NLR(t->pright);
+    }
+}
+void Browser_RNL(TREE t){
+    if(t){
+        Browser_NLR(t->pleft);
+        cout << t->key << " ";
+        Browser_NLR(t->pright);
+    }
+}
+void Browser_LRN(TREE t){
+    if(t){
+        Browser_NLR(t->pleft);
+        Browser_NLR(t->pright);
+        cout << t->key << " ";
+    }
+}
+void Browser_RLN(TREE t){
+    if(t){
+        Browser_NLR(t->pright);
+        Browser_NLR(t->pleft);
+        cout << t->key << " ";
+    }
+}
+node* FIND(TREE t, int pos_x){
+    if(!t){
+        return nullptr;
+    }else{
+        if(pos_x < t->key){
+            FIND(t->pleft, pos_x);
+        }else if(pos_x > t->key){
+            FIND(t->pright, pos_x);
+        }else{
+            return t;
+        }
+    }
+    return t;
+}
+int Find_MAX(TREE t){
+    if(t->pright == nullptr){
+        return t->key;
+    }
+    return Find_MAX(t->pright);
+}
+int Find_MIN(TREE t){
+    if(t->pleft == nullptr){
+        return t->key;
+    }
+    return Find_MIN(t->pleft);
+}
+void Delete(TREE& t, int info){
+    if(t == nullptr){
+        return;
+    }else{
+        if(info < t->key){
+            Delete(t->pleft, info);
+        }else if(info > t->key){
+            Delete(t->pright, info);
+        }else{
+            node* x = t;
+            if(t->pleft == nullptr){
+                t = t->pright;
+            }else if(t->pright == nullptr){
+                t = t->pleft;
+            }
+            delete x;
+        }
+    }
+}
+void Menu(TREE t){
+
+    while(1){
+        cout << "\n=================MENU=================";
+        cout << "\n0. Dung chuong trinh";
+        cout << "\n1. Nhap du lieu";
+        cout << "\n2. Xuat du lieu theo NLR";
+        cout << "\n3. Xuat du lieu theo NRL";
+        cout << "\n4. Xuat du lieu theo LNR";
+        cout << "\n5. Xuat du lieu theo RNL";
+        cout << "\n6. Xuat du lieu theo LRN";
+        cout << "\n7. Xuat du lieu theo RLN";
+        cout << "\n8. Tim kiem phan tu";
+        cout << "\n9. Phan tu lon nhat trong cay";
+        cout << "\n10. Phan tu nho nhat trong cay";
+        cout << "\n11. Xoa phan tu bat ki trong cay";
+        cout << "\n======================================";
+        int luachon;
+        cout << "\nNhap lua chon cua ban: ";
+        cin >> luachon;
+        if(luachon < 0 || luachon > 11){
+            cout << "\nLua chon cua ban khong phu hop vui long nhap lai!";
+        }else{
+            switch(luachon){
+                case 0:
+                    return;
+                    break;
+                case 1:
+                    int x;
+                    cout << "\nNhap so nguyen x: ";
+                    cin >> x;
+                    add_TNODE(t, x);
+                    break;
+                case 2:
+                    cout << "\nDuyet cay theo NLR: ";
+                    Browser_NLR(t);
+                    break;
+                case 3:
+                    cout << "\nDuyet cay theo NLR: ";
+                    Browser_NRL(t);
+                    break;
+                case 4:
+                    cout << "\nDuyet cay theo NLR: ";
+                    Browser_LNR(t);
+                    break;
+                case 5:
+                    cout << "\nDuyet cay theo NLR: ";
+                    Browser_RNL(t);
+                    break;
+                case 6:
+                    cout << "\nDuyet cay theo NLR: ";
+                    Browser_LRN(t);
+                    break;
+                case 7:
+                    cout << "\nDuyet cay theo NLR: ";
+                    Browser_RLN(t);
+                    break;
+                case 9:
+                    cout << "MAX: " << Find_MAX(t);
+                    break;
+                case 10:
+                    cout << "MIN: " << Find_MIN(t);
+                    break;
+                case 11:
+                    cout << "\nNhap phan tu muon xoa: ";
+                    int info;
+                    cin >> info;
+                    Delete(t, info);
+                    break;
+                case 8: 
+                    int pos_x;
+                    cout << "\nNhap phan tu can tim kiem: ";
+                    cin >> pos_x;
+                    node* p = FIND(t, pos_x);
+                    if(p == nullptr){
+                        cout << "\nPhan tu " << pos_x << " khong ton tai trong cay";
+                    }else{
+                        cout << "\nPhan tu " << pos_x << " co ton tai trong cay";
+                    }
+                    break;
+            }
+        }
+    }
+
+}
+
